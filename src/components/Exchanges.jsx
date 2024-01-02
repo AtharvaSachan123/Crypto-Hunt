@@ -3,24 +3,48 @@ import Header from './Header'
 import axios from 'axios'
 import { Baseurl } from './baseUrl'
 import Loader from './Loader'
-
+import coin from '../images/coin.png'
+import "../style/Exchanges.css"
 const Exchanges = () => {
     const [loading,setLoading]=useState(true)
+    const[exchanges,setExchanges]=useState([])
     useEffect(()=>{
         const getExchangesData= async()=>{
             const {data}= await axios.get(`${Baseurl}/exchanges`)
             console.log(data);
+            setExchanges(data);
             setLoading(false);
         }
         getExchangesData();
-    })
+    },[])
   return (
    <>
    {
     loading?<Loader/>:<>
     <Header/>
     <div>
-        
+       {
+        exchanges.map((item,i)=>{
+            return(
+                <div className="ex-cards">
+                <div className="images">
+                <img height={'80px'} src={item.image} />
+                </div>
+                <div className="name">
+                    {item.name}
+                </div>
+                <div className="price">
+                    {item.trade_volume_24h_btc.toFixed(2)}
+                </div>
+                <div className="rank">
+                    {item.trust_score_rank}
+                </div>
+            </div>
+            )
+        })
+
+       }
+
     </div>
     
     </>

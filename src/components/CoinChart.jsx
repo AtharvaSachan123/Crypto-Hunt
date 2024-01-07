@@ -13,6 +13,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import Loader from './Loader';
 
 ChartJS.register(
   CategoryScale,
@@ -23,45 +24,74 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const CoinChart = () => {
-    const [chartData,setChartData]=useState([])
-    const{id}=useParams()
-    const[days,setDays]=useState(1)
-    const CoinChartData= async()=>{
-    try{
-        const{data}= await axios.get(`${Baseurl}/coins/${id}/market_chart?vs_currency=inr&days=${days}`)
-    setChartData(data.prices)
-    console.log(data.prices)
-    }catch(error){
-        <p>Error404</p>
-    }
-    }
-    useEffect(()=>{
-        CoinChartData();
-    },[])
+const CoinChart = ({ currency }) => {
+  const [chartData, setChartData] = useState([]);
+  const { id } = useParams();
+  const [days, setDays] = useState(1);
 
-    const myData={
-        labels: chartData.map((value)=>{
-            const date=new Date(value[0]);
-            const time=date.getHours()>12
-            ?`${date.getHours()-12}:${date.getMinutes()}PM`
-            :`${date.getHours()}:${date.getMinutes()}AM`
-            return days===1?time:date.toLocaleDateString()
-        }),
-        datasets:[{
-            labels:`Price in Past Days ${days}`,
-            data:chartData.map((value)=>value[1]),
-            borderColor:'orange',
-            borderWidth:'3'
-        }
-    ]
+  const CoinChartData = async () => {
+    try {
+      
+      const { data } = await axios.get(
+        `${Baseurl}/coins/${id}/market_chart?vs_currency=${currency}&days=${days}`
+      );
+      setChartData(data.prices);
+      console.log(data.prices);
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
+  };
+
+  useEffect(() => {
+    CoinChartData();
+  }, [currency, id, days]);
+
+  const myData = {
+    labels: chartData.map((value) => {
+      const date = new Date(value[0]);
+      const time =
+        date.getHours() > 12
+          ? `${date.getHours() - 12}:${date.getMinutes()}PM`
+          : `${date.getHours()}:${date.getMinutes()}AM`;
+      return days === 1 ? time : date.toLocaleDateString();
+    }),
+    datasets: [
+      {
+        label: `Price in Past Days ${days} in ${currency}`,
+        data: chartData.map((value) => value[1]),
+        borderColor: 'orange',
+        borderWidth: '3',
+      },
+    ],
+  };
+
   return (
-    <div>
-      {/* {<Line data={myData}/>} */}
-      <Line data={myData} />
-    </div>
-  )
-}
+    <>
+    {
+      chartData.length===0?(<Loader/>):(
+        <div>
+      <Line
+        data={myData}
+        options={{
+          elements: {
+            point: {
+              radius: 1,
+            },
+          },
+        }}
+        style={{ marginTop: '5rem', width: '60rem' }}
+      />
 
-export default CoinChart
+      <div className="btn" style={{ marginTop: '30px' }}>
+        <button onClick={() => setDays(1)}>24 Hours</button>
+        <button onClick={() => setDays(30)}>1 Month</button>
+        <button onClick={() => setDays(365)}>1 Year</button>
+      </div>
+    </div>
+      )
+    }
+    </>
+  );
+};
+
+export default CoinChart;

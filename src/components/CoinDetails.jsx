@@ -33,7 +33,7 @@ const CoinDetails = () => {
     
     {
       loading?<Loader/>:<>
-        <div className="coin-detail">
+        <div className="coin-detail" style={{display:'flex',justifyContent:'space-evenly'}}>
           <div className="coin-info">
           <div className="btn">
         <button onClick={()=>setCurrency('inr')}>INR</button>
@@ -63,7 +63,7 @@ const CoinDetails = () => {
             <p> {coin.description['en'].split('.')[0]}</p>
             </div>
           </div>
-          <CoinChart/>
+          <CoinChart currency={currency}/>
         </div>
 
       </>

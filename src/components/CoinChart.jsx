@@ -38,7 +38,7 @@ const CoinChart = ({ currency }) => {
       setChartData(data.prices);
       console.log(data.prices);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error(Error);
     }
   };
 

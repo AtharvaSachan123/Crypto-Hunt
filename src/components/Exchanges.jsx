@@ -5,6 +5,7 @@ import { Baseurl } from './baseUrl'
 import Loader from './Loader'
 import coin from '../images/coin.png'
 import "../style/Exchanges.css"
+import OurModel from './OurModel'
 const Exchanges = () => {
     const [loading,setLoading]=useState(true)
     const[exchanges,setExchanges]=useState([])
@@ -22,6 +23,7 @@ const Exchanges = () => {
    {
     loading?<Loader/>:<>
     <Header/>
+    <OurModel/>
     <div>
        {
         exchanges.map((item,i)=>{

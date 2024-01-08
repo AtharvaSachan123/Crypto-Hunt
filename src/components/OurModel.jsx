@@ -1,5 +1,5 @@
 import React from 'react'
-import{} from '@react-three/fiber'
+import{Canvas} from '@react-three/fiber'
 import {useGLTF,PresentationControls,Stage} from '@react-three/drei'
 
 function Model(props){
